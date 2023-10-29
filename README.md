@@ -11,7 +11,7 @@ source run_sim
 ```
 1. c firmware code. (different from lab4_1, we need to transmit the input data and accept output data)
 2. hardware design that manages the wishbone hankshake to access bram. (same as lab4_1)
-3. Wishbone to AXI-lite and AXI-Stream interface.
+3. hadrware design that adjusts the wishbone interface to AXI-lite and AXI-Stream interface.
 4. hardware design of Wishbone decoder. (We need to connect the wishbone to design 2 and design 3)
 5. The fir design should run 2~3 times.  
 ```
