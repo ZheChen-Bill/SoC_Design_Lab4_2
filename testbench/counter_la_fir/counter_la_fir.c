@@ -111,7 +111,7 @@ void main()
 	reg_la3_oenb = reg_la3_iena = 0x00000000;    // [127:96]
 
 	// Flag start of the test 
-	reg_mprj_datal = 0xAB400000;
+	reg_mprj_datal = 0xA5000000;
 
 	// Set Counter value to zero through LA probes [63:32]
 	reg_la1_data = 0x00000000;
@@ -127,21 +127,11 @@ void main()
 		}
 	}
 */	
-	int* tmp = fir();
+	int* tmp  = fir();
 	reg_mprj_datal = *tmp << 16;
-	reg_mprj_datal = *(tmp+1) << 16;
-	reg_mprj_datal = *(tmp+2) << 16;
-	reg_mprj_datal = *(tmp+3) << 16;
-	reg_mprj_datal = *(tmp+4) << 16;
-	reg_mprj_datal = *(tmp+5) << 16;
-	reg_mprj_datal = *(tmp+6) << 16;
-	reg_mprj_datal = *(tmp+7) << 16;
-	reg_mprj_datal = *(tmp+8) << 16;
-	reg_mprj_datal = *(tmp+9) << 16;
-	reg_mprj_datal = *(tmp+10) << 16;	
 
 	//print("\n");
 	//print("Monitor: Test 1 Passed\n\n");	// Makes simulation very long!
-	reg_mprj_datal = 0xAB510000;
+	reg_mprj_datal = 0x5A000000;
 }
 

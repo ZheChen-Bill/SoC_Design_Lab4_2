@@ -83,20 +83,23 @@ module user_proj_example #(
 
     // set valid, ready and delay signal
     wire valid;
+    wire valid2;
     wire [3:0] wstrb;
     wire [31:0] la_write;
     wire decoded;
     wire decoded2;
 
-    reg ready;
+    reg bram_ready;
+    reg fir_ready;
     reg [BITS-17:0] delayed_count;
 
     // WB MI A
-    assign valid = wbs_cyc_i && wbs_stb_i && decoded; 
+    assign valid = wbs_cyc_i && wbs_stb_i && decoded;
+    assign valid2 =  wbs_cyc_i && wbs_stb_i && decoded2;
     assign wstrb = wbs_sel_i & {4{wbs_we_i}};
     assign wbs_dat_o = rdata;
     assign wdata = wbs_dat_i;
-    assign wbs_ack_o = ready;
+    assign wbs_ack_o = bram_ready;//|fir_ready;
 
     // IO
     assign io_out = count;
@@ -113,19 +116,19 @@ module user_proj_example #(
     assign clk = (~la_oenb[64]) ? la_data_in[64]: wb_clk_i;
     assign rst = (~la_oenb[65]) ? la_data_in[65]: wb_rst_i;
     // Decoded wishbone address
-    assign decoded  = wbs_adr_i[31:20] == 12'h380 ? 1'b1: 1'b0;
-    assign decoded2 = wbs_adr_i[31:20] == 12'h300 ? 1'b1: 1'b0;
+    assign decoded  = wbs_adr_i[31:24] == 8'h38 ? 1'b1: 1'b0;
+    assign decoded2 = wbs_adr_i[31:24] == 8'h30 ? 1'b1: 1'b0;
 
     always @(posedge clk) begin
         if (rst) begin
-            ready <= 1'b0;
+            bram_ready <= 1'b0;
             delayed_count <= 16'b0;
         end else begin
-            ready <= 1'b0;
-            if (valid && !ready) begin
+            bram_ready <= 1'b0;
+            if (valid && !bram_ready) begin
                 if (delayed_count == DELAYS) begin
                     delayed_count <= 16'b0;
-                    ready <= 1'b1;
+                    bram_ready <= 1'b1;
                 end else begin
                     delayed_count <= delayed_count + 1;
                 end
@@ -133,6 +136,10 @@ module user_proj_example #(
         end
     end
     
+    wb_axistream wb_axistream(
+        
+    );
+
     bram user_bram (
         .CLK(clk),
         .WE0(wstrb),
