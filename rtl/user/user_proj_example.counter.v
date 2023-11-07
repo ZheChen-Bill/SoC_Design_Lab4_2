@@ -84,22 +84,26 @@ module user_proj_example #(
     // set valid, ready and delay signal
     wire valid;
     wire valid2;
+    wire valid3;
     wire [3:0] wstrb;
     wire [31:0] la_write;
     wire decoded;
     wire decoded2;
+    wire decoded3;
 
     reg bram_ready;
-    reg fir_ready;
+    reg axistream_ready;
+    reg axilite_ready;
     reg [BITS-17:0] delayed_count;
 
     // WB MI A
     assign valid = wbs_cyc_i && wbs_stb_i && decoded;
     assign valid2 =  wbs_cyc_i && wbs_stb_i && decoded2;
+    assign valid3 =  wbs_cyc_i && wbs_stb_i && decoded3;
     assign wstrb = wbs_sel_i & {4{wbs_we_i}};
     assign wbs_dat_o = rdata;
     assign wdata = wbs_dat_i;
-    assign wbs_ack_o = bram_ready;//|fir_ready;
+    assign wbs_ack_o = bram_ready|axistream_ready|axilite_ready;
 
     // IO
     assign io_out = count;
@@ -117,7 +121,11 @@ module user_proj_example #(
     assign rst = (~la_oenb[65]) ? la_data_in[65]: wb_rst_i;
     // Decoded wishbone address
     assign decoded  = wbs_adr_i[31:24] == 8'h38 ? 1'b1: 1'b0;
-    assign decoded2 = wbs_adr_i[31:24] == 8'h30 ? 1'b1: 1'b0;
+    assign decoded2 = (wbs_adr_i[31:0] == 8'h30000080 | wbs_adr_i[31:0] == 8'h30000084) ? 1'b1: 1'b0;
+    assign decoded3 = (wbs_adr_i[31:0] >= 8'h30000000 & wbs_adr_i[31:0] <= 8'h3000007F) ? 1'b1: 1'b0;
+
+    // Signal for wb_axistream
+
 
     always @(posedge clk) begin
         if (rst) begin
@@ -137,9 +145,27 @@ module user_proj_example #(
     end
     
     wb_axistream wb_axistream(
+        .clk(clk),
+        .rst_n(~rst),
+
+        .wbs_adr_i(wbs_adr_i),
+        .wb_valid(valid2),
+        .wb_ready(axistream_ready),
+        .wbs_we_i(wbs_we_i),
+        .wbs_dat_i(wbs_dat_i),
+        .wbs_dat_o(stream_rdata),
+
+        .sm_tvalid(sm_tvalid),
+        .sm_tready(sm_tready),
+        .sm_tdata(sm_tdata),
+
+        .ss_tvalid(ss_tvalid),
+        .ss_tready(ss_tready),
+        .ss_tdata(ss_tdata)
+    );
+    wb_axilite wb_axilite(
         
     );
-
     bram user_bram (
         .CLK(clk),
         .WE0(wstrb),

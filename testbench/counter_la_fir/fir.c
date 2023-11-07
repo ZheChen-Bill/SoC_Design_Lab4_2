@@ -13,32 +13,32 @@ void __attribute__ ( ( section ( ".mprjram" ) ) ) initfir() {
 
 void __attribute__ ( ( section ( ".mprjram" ) ) ) start() {
 	//check ap_idle = 1(bit[2] = 1), ap_start = 1;
-	while(1){
-		if (((read(ap_control_address) & (1<<2)) == 0x00000004)){
+//	while(1){
+//		if (((read(ap_control_address) & (1<<2)) == 0x00000004)){
 			write((ap_control_address),((read(ap_control_address) | 1)));
-			break;
-		}
-	}
+//			break;
+//		}
+//	}
 }
 
 void __attribute__ ( ( section ( ".mprjram" ) ) ) input() {
 	//check fir ready to receive data (bit[4] = 1), then write data;
-	while(1){
-		if (read(ap_control_address) & (1<<4) == 0x00000010){
+//	while(1){
+//		if (read(ap_control_address) & (1<<4) == 0x00000010){
 			write(input_address,reg_fir_x);
-			break;
-		}
-	}
+//			break;
+//		}
+//	}
 }
 
 void __attribute__ ( ( section ( ".mprjram" ) ) ) output() {
 	//check fir is valid for output data (bit[5] = 1), then read data;
-	while(1){
-		if (read(ap_control_address) & (1<<5) == 0x00000020){
+//	while(1){
+//		if (read(ap_control_address) & (1<<5) == 0x00000020){
 			reg_fir_y = read(output_address);
-			break;
-		}
-	}
+//			break;
+//		}
+//	}
 }
 
 int* __attribute__ ( ( section ( ".mprjram" ) ) ) fir(){
