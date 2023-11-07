@@ -86,20 +86,20 @@ Linker script and memory map
                 0x0000000000000040                _ebss = .
                 0x0000000000000040                _end = .
 
-.mprjram        0x0000000038000000      0x1b0 load address 0x00000000100006c8
+.mprjram        0x0000000038000000      0x170 load address 0x00000000100006c8
                 0x0000000038000000                . = ALIGN (0x8)
                 0x0000000038000000                _fsram = .
  *libgcc.a:*(.text .text.*)
- .mprjram       0x0000000038000000      0x1b0 counter_la_fir.elf-fir.o
+ .mprjram       0x0000000038000000      0x170 counter_la_fir.elf-fir.o
                 0x0000000038000000                initfir
                 0x0000000038000088                start
-                0x00000000380000d0                input
-                0x0000000038000110                output
-                0x0000000038000150                fir
+                0x00000000380000b8                input
+                0x00000000380000e4                output
+                0x0000000038000110                fir
                 0x0000000000000600                PROVIDE (_fstack = (ORIGIN (dff2) + LENGTH (dff2)))
                 0x0000000010000698                PROVIDE (_fdata_rom = LOADADDR (.data))
                 [!provide]                        PROVIDE (_edata_rom = (LOADADDR (.data) + SIZEOF (.data)))
-                0x00000000380001b0                PROVIDE (_esram = (ORIGIN (mprjram) + SIZEOF (.mprjram)))
+                0x0000000038000170                PROVIDE (_esram = (ORIGIN (mprjram) + SIZEOF (.mprjram)))
                 0x00000000100006c8                PROVIDE (_esram_rom = LOADADDR (.mprjram))
 LOAD counter_la_fir.elf-crt0_vex.o
 LOAD counter_la_fir.elf-isr.o
@@ -130,11 +130,11 @@ OUTPUT(counter_la_fir.elf elf32-littleriscv)
  .comment       0x000000000000001b       0x1c counter_la_fir.elf-fir.o
  .comment       0x000000000000001b       0x1c counter_la_fir.elf-counter_la_fir.o
 
-.debug_line     0x0000000000000000      0x92e
+.debug_line     0x0000000000000000      0x8ce
  .debug_line    0x0000000000000000      0x204 counter_la_fir.elf-crt0_vex.o
  .debug_line    0x0000000000000204       0xd1 counter_la_fir.elf-isr.o
- .debug_line    0x00000000000002d5      0x222 counter_la_fir.elf-fir.o
- .debug_line    0x00000000000004f7      0x437 counter_la_fir.elf-counter_la_fir.o
+ .debug_line    0x00000000000002d5      0x1c2 counter_la_fir.elf-fir.o
+ .debug_line    0x0000000000000497      0x437 counter_la_fir.elf-counter_la_fir.o
 
 .debug_line_str
                 0x0000000000000000       0xdb

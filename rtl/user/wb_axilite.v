@@ -1,15 +1,16 @@
 module wb_axilite
 #(  parameter pADDR_WIDTH=12,
-    parameter pDATA_WIDTH=32
+    parameter pDATA_WIDTH=32,
+    parameter DELAYS = 10
 )(
     clk,
-    rst_n,
+    rst,
 
     wbs_adr_i,
     wb_valid,
     wb_ready,
     wbs_we_i,
-    wdata,
+    wbs_dat_i,
     wbs_dat_o,
 
     awvalid,
@@ -28,7 +29,7 @@ module wb_axilite
 );
     // clock and reset signal
     input wire clk;
-    input wire rst_n;
+    input wire rst;
 
     /*
     // wishbone origin signal
@@ -72,12 +73,14 @@ module wb_axilite
     input  wire arready;
     output reg  [pADDR_WIDTH-1:0] araddr;
     input  wire rvalid;
-    output reg  wready;
+    output reg  rready;
     input  wire [pDATA_WIDTH-1:0] rdata;
 
+    // counter for delay 10 clock
+    reg  [3:0] count;
     // transfer wbs to stream
-    always@(posedge clk or negedge rst_n) begin
-        if (~rst_n) begin
+    always@(posedge clk) begin
+        if (rst) begin
             //write initialize
             awvalid   <= 1'b0;
             wvalid    <= 1'b0;
@@ -90,8 +93,13 @@ module wb_axilite
             wbs_dat_o <= rdata;
             //wbs_ack_o initialize
             wb_ready  <= 1'b0;
+            count     <= 4'b0;
         end else begin
-            if (wbs_we_i) begin
+            if (count != DELAYS) begin
+                count    <= count + 1;
+                wb_ready <= 1'b0;
+            end
+            else if (wbs_we_i) begin
                 awvalid   <= wb_valid;
                 awaddr    <= wbs_adr_i[pADDR_WIDTH-1:0];
                 wvalid    <= wb_valid;

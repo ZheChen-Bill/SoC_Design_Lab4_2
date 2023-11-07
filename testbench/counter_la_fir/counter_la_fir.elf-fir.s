@@ -138,15 +138,6 @@ start:
 	.cfi_offset 8, -4
 	addi	s0,sp,16
 	.cfi_def_cfa 8, 0
-.L7:
-	.loc 1 17 10
-	li	a5,805306368
-	lw	a5,0(a5)
-	.loc 1 17 43
-	andi	a4,a5,4
-	.loc 1 17 6
-	li	a5,4
-	bne	a4,a5,.L7
 	.loc 1 18 45
 	li	a5,805306368
 	lw	a4,0(a5)
@@ -156,8 +147,6 @@ start:
 	ori	a4,a4,1
 	.loc 1 18 40
 	sw	a4,0(a5)
-	.loc 1 19 4
-	nop
 	.loc 1 22 1
 	nop
 	lw	s0,12(sp)
@@ -182,14 +171,6 @@ input:
 	.cfi_offset 8, -4
 	addi	s0,sp,16
 	.cfi_def_cfa 8, 0
-.L12:
-	.loc 1 27 8
-	li	a5,805306368
-	lw	a5,0(a5)
-	.loc 1 27 41
-	andi	a5,a5,1
-	.loc 1 27 6
-	beq	a5,zero,.L12
 	.loc 1 28 5
 	li	a5,805306368
 	addi	a5,a5,128
@@ -197,8 +178,6 @@ input:
 	lui	a4,%hi(reg_fir_x)
 	lw	a4,%lo(reg_fir_x)(a4)
 	sw	a4,0(a5)
-	.loc 1 29 4
-	nop
 	.loc 1 32 1
 	nop
 	lw	s0,12(sp)
@@ -223,14 +202,6 @@ output:
 	.cfi_offset 8, -4
 	addi	s0,sp,16
 	.cfi_def_cfa 8, 0
-.L17:
-	.loc 1 37 8
-	li	a5,805306368
-	lw	a5,0(a5)
-	.loc 1 37 41
-	andi	a5,a5,1
-	.loc 1 37 6
-	beq	a5,zero,.L17
 	.loc 1 38 17
 	li	a5,805306368
 	addi	a5,a5,132
@@ -238,8 +209,6 @@ output:
 	.loc 1 38 14
 	lui	a5,%hi(reg_fir_y)
 	sw	a4,%lo(reg_fir_y)(a5)
-	.loc 1 39 4
-	nop
 	.loc 1 42 1
 	nop
 	lw	s0,12(sp)
@@ -276,8 +245,8 @@ fir:
 	.loc 1 52 19
 	li	s1,0
 	.loc 1 52 2
-	j	.L20
-.L21:
+	j	.L8
+.L9:
 	.loc 1 53 13 discriminator 3
 	lui	a5,%hi(reg_fir_x)
 	sw	s1,%lo(reg_fir_x)(a5)
@@ -287,11 +256,11 @@ fir:
 	call	output
 	.loc 1 52 38 discriminator 3
 	addi	s1,s1,1
-.L20:
+.L8:
 	.loc 1 52 24 discriminator 1
 	lui	a5,%hi(data_length)
 	lw	a5,%lo(data_length)(a5)
-	blt	s1,a5,.L21
+	blt	s1,a5,.L9
 .LBE3:
 	.loc 1 61 19
 	lui	a5,%hi(reg_fir_y)
