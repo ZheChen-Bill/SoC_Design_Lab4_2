@@ -138,6 +138,15 @@ start:
 	.cfi_offset 8, -4
 	addi	s0,sp,16
 	.cfi_def_cfa 8, 0
+.L7:
+	.loc 1 17 10
+	li	a5,805306368
+	lw	a5,0(a5)
+	.loc 1 17 43
+	andi	a4,a5,4
+	.loc 1 17 6
+	li	a5,4
+	bne	a4,a5,.L7
 	.loc 1 18 45
 	li	a5,805306368
 	lw	a4,0(a5)
@@ -147,6 +156,8 @@ start:
 	ori	a4,a4,1
 	.loc 1 18 40
 	sw	a4,0(a5)
+	.loc 1 19 4
+	nop
 	.loc 1 22 1
 	nop
 	lw	s0,12(sp)
@@ -227,40 +238,42 @@ fir:
 .LFB4:
 	.loc 1 44 56
 	.cfi_startproc
-	addi	sp,sp,-16
-	.cfi_def_cfa_offset 16
-	sw	ra,12(sp)
-	sw	s0,8(sp)
-	sw	s1,4(sp)
+	addi	sp,sp,-32
+	.cfi_def_cfa_offset 32
+	sw	ra,28(sp)
+	sw	s0,24(sp)
 	.cfi_offset 1, -4
 	.cfi_offset 8, -8
-	.cfi_offset 9, -12
-	addi	s0,sp,16
+	addi	s0,sp,32
 	.cfi_def_cfa 8, 0
 	.loc 1 46 2
 	call	initfir
 	.loc 1 49 2
 	call	start
 .LBB3:
-	.loc 1 52 19
-	li	s1,0
+	.loc 1 52 10
+	sw	zero,-20(s0)
 	.loc 1 52 2
-	j	.L8
-.L9:
+	j	.L12
+.L13:
 	.loc 1 53 13 discriminator 3
 	lui	a5,%hi(reg_fir_x)
-	sw	s1,%lo(reg_fir_x)(a5)
+	lw	a4,-20(s0)
+	sw	a4,%lo(reg_fir_x)(a5)
 	.loc 1 56 3 discriminator 3
 	call	input
 	.loc 1 59 3 discriminator 3
 	call	output
-	.loc 1 52 38 discriminator 3
-	addi	s1,s1,1
-.L8:
-	.loc 1 52 24 discriminator 1
+	.loc 1 52 29 discriminator 3
+	lw	a5,-20(s0)
+	addi	a5,a5,1
+	sw	a5,-20(s0)
+.L12:
+	.loc 1 52 15 discriminator 1
 	lui	a5,%hi(data_length)
 	lw	a5,%lo(data_length)(a5)
-	blt	s1,a5,.L9
+	lw	a4,-20(s0)
+	blt	a4,a5,.L13
 .LBE3:
 	.loc 1 61 19
 	lui	a5,%hi(reg_fir_y)
@@ -272,14 +285,12 @@ fir:
 	addi	a5,a5,%lo(outputbuffer)
 	.loc 1 63 2
 	mv	a0,a5
-	lw	ra,12(sp)
+	lw	ra,28(sp)
 	.cfi_restore 1
-	lw	s0,8(sp)
+	lw	s0,24(sp)
 	.cfi_restore 8
-	.cfi_def_cfa 2, 16
-	lw	s1,4(sp)
-	.cfi_restore 9
-	addi	sp,sp,16
+	.cfi_def_cfa 2, 32
+	addi	sp,sp,32
 	.cfi_def_cfa_offset 0
 	jr	ra
 	.cfi_endproc
@@ -291,7 +302,7 @@ fir:
 	.file 3 "/opt/riscv/lib/gcc/riscv32-unknown-elf/12.1.0/include/stdint-gcc.h"
 	.section	.debug_info,"",@progbits
 .Ldebug_info0:
-	.4byte	0x174
+	.4byte	0x173
 	.2byte	0x5
 	.byte	0x1
 	.byte	0x4
@@ -416,10 +427,10 @@ fir:
 	.byte	0x7
 	.string	"i"
 	.byte	0x34
-	.byte	0x13
 	.4byte	0x6a
-	.byte	0x1
-	.byte	0x59
+	.byte	0x2
+	.byte	0x91
+	.byte	0x6c
 	.byte	0
 	.byte	0
 	.byte	0xc
@@ -461,7 +472,6 @@ fir:
 	.byte	0x7
 	.string	"i"
 	.byte	0x6
-	.byte	0xa
 	.4byte	0x6a
 	.byte	0x2
 	.byte	0x91
@@ -566,7 +576,8 @@ fir:
 	.byte	0x3b
 	.byte	0xb
 	.byte	0x39
-	.byte	0xb
+	.byte	0x21
+	.byte	0xa
 	.byte	0x49
 	.byte	0x13
 	.byte	0x2
