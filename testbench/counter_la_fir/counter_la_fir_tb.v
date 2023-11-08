@@ -31,7 +31,7 @@ module counter_la_fir_tb;
 
 	assign checkbits  = mprj_io[31:16];
 	assign uart_tx = mprj_io[6];
-
+	integer clock_count;
 	always #12.5 clock <= (clock === 1'b0);
 
 	initial begin
@@ -155,21 +155,44 @@ module counter_la_fir_tb;
 	end
 
 	initial begin
-		wait(checkbits == 16'hA500);
+		clock_count = 0;
+		wait(checkbits == (16'hA500>>8));
 		$display("LA Test 1 started");
-		//wait(checkbits == 16'hAB41);
+		while(checkbits != (16'h765A))
+		@(posedge clock) clock_count = clock_count +1;
+//		wait(checkbits == 16'd10614);
+//		$display("Last data is equal to %d",checkbits);
+		@(posedge clock);
+		$display("Clock count = %d ",clock_count);
+		$display("Computation time = %d (ns)",clock_count*25);
+//		wait(checkbits == (16'h765A));
+		$display("LA Test 1 passed");
 
-		//wait(checkbits == 16'd40);
-		//$display("Call function matmul() in User Project BRAM (mprjram, 0x38000000) return value passed, 0x%x", checkbits);
-		//wait(checkbits == 16'd893);
-		//$display("Call function matmul() in User Project BRAM (mprjram, 0x38000000) return value passed, 0x%x", checkbits);
-		//wait(checkbits == 16'd2541);
-		//$display("Call function matmul() in User Project BRAM (mprjram, 0x38000000) return value passed, 0x%x", checkbits);
-		//wait(checkbits == 16'd2669);
-		//$display("Call function matmul() in User Project BRAM (mprjram, 0x38000000) return value passed, 0x%x", checkbits);		
-
-		wait(checkbits == 16'h5A00);
+		clock_count = 0;
+		wait(checkbits == (16'hA500>>8));
+		$display("LA Test 2 started");
+		while(checkbits != (16'h765A))
+		@(posedge clock) clock_count = clock_count +1;
+//		wait(checkbits == 16'd10614);
+//		$display("Last data is equal to %d",checkbits);
+		@(posedge clock);
+		$display("Clock count = %d ",clock_count);
+		$display("Computation time = %d (ns)",clock_count*25);
+//		wait(checkbits == (16'h765A));
 		$display("LA Test 2 passed");
+
+		clock_count = 0;
+		wait(checkbits == (16'hA500>>8));
+		$display("LA Test 3 started");
+		while(checkbits != (16'h765A))
+		@(posedge clock) clock_count = clock_count +1;
+//		wait(checkbits == 16'd10614);
+//		$display("Last data is equal to %d",checkbits);
+		@(posedge clock);
+		$display("Clock count = %d ",clock_count);
+		$display("Computation time = %d (ns)",clock_count*25);
+//		wait(checkbits == (16'h765A));
+		$display("LA Test 3 passed");
 		#10000;
 		$finish;
 	end

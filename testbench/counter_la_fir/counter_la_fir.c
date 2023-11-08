@@ -18,7 +18,6 @@
 // This include is relative to $CARAVEL_PATH (see Makefile)
 #include <defs.h>
 #include <stub.c>
-
 extern int* fir();
 
 // --------------------------------------------------------
@@ -111,7 +110,7 @@ void main()
 	reg_la3_oenb = reg_la3_iena = 0x00000000;    // [127:96]
 
 	// Flag start of the test 
-	reg_mprj_datal = 0xA5000000;
+	reg_mprj_datal = (0xA5000000>>8);
 
 	// Set Counter value to zero through LA probes [63:32]
 	reg_la1_data = 0x00000000;
@@ -127,11 +126,11 @@ void main()
 		}
 	}
 */	
-	int* tmp  = fir();
-	reg_mprj_datal = *tmp << 16;
+		int* tmp  = fir();
+//		reg_mprj_datal = *tmp << 16;
 
 	//print("\n");
-	//print("Monitor: Test 1 Passed\n\n");	// Makes simulation very long!
-	reg_mprj_datal = 0x5A000000;
+	//print("Monitor: Test 1 Passed\n\n");	// Makes simulation very long! 0x005A0000
+	//reg_mprj_datal = ((*tmp<<24)|0x5A000000>>8);
 }
 
