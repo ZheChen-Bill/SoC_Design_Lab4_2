@@ -1,5 +1,6 @@
 // bram behavior code (can't be synthesis)
 // 11 words
+/*
 module bram11 
 (
     CLK,
@@ -38,8 +39,7 @@ module bram11
     end
 
 endmodule
-
-/*
+*/
 module bram11 (clk, we, re, waddr, raddr, wdi, rdo);
     parameter ADDR_WIDTH = 12;
     parameter SIZE = 11;
@@ -60,4 +60,3 @@ module bram11 (clk, we, re, waddr, raddr, wdi, rdo);
     end
     
 endmodule
-*/

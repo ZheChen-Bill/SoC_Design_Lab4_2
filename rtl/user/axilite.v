@@ -163,7 +163,7 @@ module axilite
             WAIT: begin
                 if (aw_hs) begin
                     if ((awaddr >= 12'h020 & awaddr <= 12'h0FF)) begin
-                        tap_A_reg =  {4'b00,awaddr[0+:7]-8'h20};
+                        tap_A_reg =  {4'b0,awaddr[0+:7]-8'h20};
                     end
                     else begin
                         tap_A_reg = 0;
@@ -171,7 +171,7 @@ module axilite
                 end
                 else if (arvalid) begin
                     if ((araddr >= 12'h020 & araddr <= 12'h0FF)) begin
-                        tap_A_reg = {4'b00,araddr[0+:7]-8'h20};
+                        tap_A_reg = {4'b0,araddr[0+:7]-8'h20};
                     end
                     else begin
                         tap_A_reg = 0;

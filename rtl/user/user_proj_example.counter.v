@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // SPDX-License-Identifier: Apache-2.0
-
-`default_nettype none
+`define MPRJ_IO_PADS 38
+`default_nettype wire
 /*
  *-------------------------------------------------------------
  *
@@ -72,9 +72,9 @@ module user_proj_example #(
     wire clk;
     wire rst;
 
-    wire [`MPRJ_IO_PADS-1:0] io_in;
-    wire [`MPRJ_IO_PADS-1:0] io_out;
-    wire [`MPRJ_IO_PADS-1:0] io_oeb;
+//    wire [`MPRJ_IO_PADS-1:0] io_in;
+//    wire [`MPRJ_IO_PADS-1:0] io_out;
+//    wire [`MPRJ_IO_PADS-1:0] io_oeb;
 
     // wdata and rdata for bram
     wire [31:0] rdata; 
@@ -177,7 +177,7 @@ module user_proj_example #(
     assign decoded3 = (wbs_adr_i[31:0] >= 32'h30000000 & wbs_adr_i[31:0] <= 32'h3000007F) ? 1'b1: 1'b0;
 
 
-    always @(posedge clk) begin
+    always@(posedge clk) begin
         if (rst) begin
             bram_ready <= 1'b0;
             delayed_count <= 16'b0;
@@ -286,24 +286,44 @@ module user_proj_example #(
 
     // RAM for tap
     bram11 tap_RAM (
-        .CLK(clk),
-        .WE(tap_WE),
-        .EN(tap_EN),
-        .Di(tap_Di),
-        .A(tap_A),
-        .Do(tap_Do)
+        .clk(clk),
+        .we(&tap_WE),
+        .re(tap_EN&(~(|tap_WE))),
+        .waddr(tap_A>>2),
+        .raddr(tap_A>>2),
+        .wdi(tap_Di),
+        .rdo(tap_Do)
+    );
+    // RAM for data: choose bram11 or bram12
+    bram11 data_RAM(
+        .clk(clk),
+        .we(&data_WE),
+        .re(data_EN&(~(|data_WE))),
+        .waddr(data_A>>2),
+        .raddr(data_A>>2),
+        .wdi(data_Di),
+        .rdo(data_Do)
     );
 
+/*    
     // RAM for data: choose bram11 or bram12
     bram11 data_RAM(
         .CLK(clk),
         .WE(data_WE),
         .EN(data_EN),
         .Di(data_Di),
-        .A(data_A),
+        .A(data_A>>2),
         .Do(data_Do)
     );
-
+    bram11 tap_RAM (
+        .CLK(clk),
+        .WE(tap_WE),
+        .EN(tap_EN),
+        .Di(tap_Di),
+        .A(tap_A>>2),
+        .Do(tap_Do)
+    );
+*/
     bram user_bram (
         .CLK(clk),
         .WE0(wstrb),
@@ -312,8 +332,6 @@ module user_proj_example #(
         .Do0(rdata),
         .A0(wbs_adr_i)
     );
-
-
 endmodule
 
 `default_nettype wire
