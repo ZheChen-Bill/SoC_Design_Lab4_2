@@ -3,7 +3,7 @@
 void __attribute__ ( ( section ( ".mprjram" ) ) ) initfir() {
 	//initial your fir
 	write(data_length_address,data_length);
-	for(int i=0;i<N;i=i+1){
+	for(int register i=0;i<N;i=i+1){
 		write((tap_base+4*i),taps[i]);
 	}
 	reg_fir_x = 0;
@@ -49,7 +49,7 @@ int* __attribute__ ( ( section ( ".mprjram" ) ) ) fir(){
 	start();
 
 	//write down your fir
-	for(int i=0;i<data_length;i=i+1){
+	for(int register i=0;i<data_length;i=i+1){
 		reg_fir_x = i;
 
 		//check fir ready to receive data (bit[4] = 1), then write data;
@@ -58,6 +58,31 @@ int* __attribute__ ( ( section ( ".mprjram" ) ) ) fir(){
 		//check fir is valid for output data (bit[5] = 1), then read data;
 		output();
 		}
+
+	start();
+	//write down your fir
+	for(int register i=0;i<data_length;i=i+1){
+		reg_fir_x = i;
+
+		//check fir ready to receive data (bit[4] = 1), then write data;
+		input();
+
+		//check fir is valid for output data (bit[5] = 1), then read data;
+		output();
+		}
+
+	start();
+	//write down your fir
+	for(int register i=0;i<data_length;i=i+1){
+		reg_fir_x = i;
+
+		//check fir ready to receive data (bit[4] = 1), then write data;
+		input();
+
+		//check fir is valid for output data (bit[5] = 1), then read data;
+		output();
+		}
+		
 		outputbuffer[0] = reg_fir_y;
 		return outputbuffer;
 	}

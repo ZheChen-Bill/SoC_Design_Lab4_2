@@ -59,11 +59,13 @@ initfir:
 	.file 1 "fir.c"
 	.loc 1 3 61
 	.cfi_startproc
-	addi	sp,sp,-32
-	.cfi_def_cfa_offset 32
-	sw	s0,28(sp)
+	addi	sp,sp,-16
+	.cfi_def_cfa_offset 16
+	sw	s0,12(sp)
+	sw	s1,8(sp)
 	.cfi_offset 8, -4
-	addi	s0,sp,32
+	.cfi_offset 9, -8
+	addi	s0,sp,16
 	.cfi_def_cfa 8, 0
 	.loc 1 5 3
 	li	a5,805306368
@@ -73,37 +75,32 @@ initfir:
 	lw	a4,%lo(data_length)(a4)
 	sw	a4,0(a5)
 .LBB2:
-	.loc 1 6 10
-	sw	zero,-20(s0)
+	.loc 1 6 19
+	li	s1,0
 	.loc 1 6 2
 	j	.L2
 .L3:
 	.loc 1 7 37 discriminator 3
-	lw	a4,-20(s0)
 	li	a5,201326592
 	addi	a5,a5,8
-	add	a5,a4,a5
+	add	a5,s1,a5
 	slli	a5,a5,2
 	.loc 1 7 5 discriminator 3
 	mv	a3,a5
 	.loc 1 7 50 discriminator 3
 	lui	a5,%hi(taps)
 	addi	a4,a5,%lo(taps)
-	lw	a5,-20(s0)
-	slli	a5,a5,2
+	slli	a5,s1,2
 	add	a5,a4,a5
 	lw	a5,0(a5)
 	.loc 1 7 44 discriminator 3
 	sw	a5,0(a3)
-	.loc 1 6 20 discriminator 3
-	lw	a5,-20(s0)
-	addi	a5,a5,1
-	sw	a5,-20(s0)
+	.loc 1 6 29 discriminator 3
+	addi	s1,s1,1
 .L2:
-	.loc 1 6 15 discriminator 1
-	lw	a4,-20(s0)
+	.loc 1 6 24 discriminator 1
 	li	a5,10
-	ble	a4,a5,.L3
+	ble	s1,a5,.L3
 .LBE2:
 	.loc 1 9 12
 	lui	a5,%hi(reg_fir_x)
@@ -116,10 +113,12 @@ initfir:
 	sw	zero,%lo(outputbuffer)(a5)
 	.loc 1 12 1
 	nop
-	lw	s0,28(sp)
+	lw	s0,12(sp)
 	.cfi_restore 8
-	.cfi_def_cfa 2, 32
-	addi	sp,sp,32
+	.cfi_def_cfa 2, 16
+	lw	s1,8(sp)
+	.cfi_restore 9
+	addi	sp,sp,16
 	.cfi_def_cfa_offset 0
 	jr	ra
 	.cfi_endproc
@@ -238,59 +237,105 @@ fir:
 .LFB4:
 	.loc 1 44 56
 	.cfi_startproc
-	addi	sp,sp,-32
-	.cfi_def_cfa_offset 32
-	sw	ra,28(sp)
-	sw	s0,24(sp)
+	addi	sp,sp,-16
+	.cfi_def_cfa_offset 16
+	sw	ra,12(sp)
+	sw	s0,8(sp)
+	sw	s1,4(sp)
 	.cfi_offset 1, -4
 	.cfi_offset 8, -8
-	addi	s0,sp,32
+	.cfi_offset 9, -12
+	addi	s0,sp,16
 	.cfi_def_cfa 8, 0
 	.loc 1 46 2
 	call	initfir
 	.loc 1 49 2
 	call	start
 .LBB3:
-	.loc 1 52 10
-	sw	zero,-20(s0)
+	.loc 1 52 19
+	li	s1,0
 	.loc 1 52 2
 	j	.L12
 .L13:
 	.loc 1 53 13 discriminator 3
 	lui	a5,%hi(reg_fir_x)
-	lw	a4,-20(s0)
-	sw	a4,%lo(reg_fir_x)(a5)
+	sw	s1,%lo(reg_fir_x)(a5)
 	.loc 1 56 3 discriminator 3
 	call	input
 	.loc 1 59 3 discriminator 3
 	call	output
-	.loc 1 52 29 discriminator 3
-	lw	a5,-20(s0)
-	addi	a5,a5,1
-	sw	a5,-20(s0)
+	.loc 1 52 38 discriminator 3
+	addi	s1,s1,1
 .L12:
-	.loc 1 52 15 discriminator 1
+	.loc 1 52 24 discriminator 1
 	lui	a5,%hi(data_length)
 	lw	a5,%lo(data_length)(a5)
-	lw	a4,-20(s0)
-	blt	a4,a5,.L13
+	blt	s1,a5,.L13
 .LBE3:
-	.loc 1 61 19
+	.loc 1 62 2
+	call	start
+.LBB4:
+	.loc 1 64 19
+	li	s1,0
+	.loc 1 64 2
+	j	.L14
+.L15:
+	.loc 1 65 13 discriminator 3
+	lui	a5,%hi(reg_fir_x)
+	sw	s1,%lo(reg_fir_x)(a5)
+	.loc 1 68 3 discriminator 3
+	call	input
+	.loc 1 71 3 discriminator 3
+	call	output
+	.loc 1 64 38 discriminator 3
+	addi	s1,s1,1
+.L14:
+	.loc 1 64 24 discriminator 1
+	lui	a5,%hi(data_length)
+	lw	a5,%lo(data_length)(a5)
+	blt	s1,a5,.L15
+.LBE4:
+	.loc 1 74 2
+	call	start
+.LBB5:
+	.loc 1 76 19
+	li	s1,0
+	.loc 1 76 2
+	j	.L16
+.L17:
+	.loc 1 77 13 discriminator 3
+	lui	a5,%hi(reg_fir_x)
+	sw	s1,%lo(reg_fir_x)(a5)
+	.loc 1 80 3 discriminator 3
+	call	input
+	.loc 1 83 3 discriminator 3
+	call	output
+	.loc 1 76 38 discriminator 3
+	addi	s1,s1,1
+.L16:
+	.loc 1 76 24 discriminator 1
+	lui	a5,%hi(data_length)
+	lw	a5,%lo(data_length)(a5)
+	blt	s1,a5,.L17
+.LBE5:
+	.loc 1 86 19
 	lui	a5,%hi(reg_fir_y)
 	lw	a4,%lo(reg_fir_y)(a5)
 	lui	a5,%hi(outputbuffer)
 	sw	a4,%lo(outputbuffer)(a5)
-	.loc 1 62 10
+	.loc 1 87 10
 	lui	a5,%hi(outputbuffer)
 	addi	a5,a5,%lo(outputbuffer)
-	.loc 1 63 2
+	.loc 1 88 2
 	mv	a0,a5
-	lw	ra,28(sp)
+	lw	ra,12(sp)
 	.cfi_restore 1
-	lw	s0,24(sp)
+	lw	s0,8(sp)
 	.cfi_restore 8
-	.cfi_def_cfa 2, 32
-	addi	sp,sp,32
+	.cfi_def_cfa 2, 16
+	lw	s1,4(sp)
+	.cfi_restore 9
+	addi	sp,sp,16
 	.cfi_def_cfa_offset 0
 	jr	ra
 	.cfi_endproc
@@ -302,12 +347,12 @@ fir:
 	.file 3 "/opt/riscv/lib/gcc/riscv32-unknown-elf/12.1.0/include/stdint-gcc.h"
 	.section	.debug_info,"",@progbits
 .Ldebug_info0:
-	.4byte	0x173
+	.4byte	0x1a1
 	.2byte	0x5
 	.byte	0x1
 	.byte	0x4
 	.4byte	.Ldebug_abbrev0
-	.byte	0x8
+	.byte	0x9
 	.4byte	.LASF19
 	.byte	0x1d
 	.4byte	.LASF0
@@ -323,7 +368,7 @@ fir:
 	.byte	0x2
 	.byte	0x5
 	.4byte	.LASF3
-	.byte	0x9
+	.byte	0xa
 	.4byte	.LASF20
 	.byte	0x3
 	.byte	0x28
@@ -353,7 +398,7 @@ fir:
 	.byte	0x8
 	.byte	0x7
 	.4byte	.LASF9
-	.byte	0xa
+	.byte	0xb
 	.byte	0x4
 	.byte	0x5
 	.string	"int"
@@ -368,10 +413,10 @@ fir:
 	.byte	0x5
 	.byte	0x3
 	.4byte	data_length
-	.byte	0x4
+	.byte	0x5
 	.4byte	0x6a
 	.4byte	0x98
-	.byte	0x5
+	.byte	0x6
 	.4byte	0x71
 	.byte	0xa
 	.byte	0
@@ -396,10 +441,10 @@ fir:
 	.byte	0x5
 	.byte	0x3
 	.4byte	reg_fir_y
-	.byte	0x4
+	.byte	0x5
 	.4byte	0x6a
 	.4byte	0xd8
-	.byte	0x5
+	.byte	0x6
 	.4byte	0x71
 	.byte	0
 	.byte	0
@@ -410,54 +455,75 @@ fir:
 	.byte	0x5
 	.byte	0x3
 	.4byte	outputbuffer
-	.byte	0xb
+	.byte	0xc
 	.string	"fir"
 	.byte	0x1
 	.byte	0x2c
 	.byte	0x33
-	.4byte	0x118
+	.4byte	0x147
 	.4byte	.LFB4
 	.4byte	.LFE4-.LFB4
 	.byte	0x1
 	.byte	0x9c
-	.4byte	0x118
-	.byte	0x6
+	.4byte	0x147
+	.byte	0x7
 	.4byte	.LBB3
 	.4byte	.LBE3-.LBB3
-	.byte	0x7
+	.4byte	0x11a
+	.byte	0x3
 	.string	"i"
 	.byte	0x34
 	.4byte	0x6a
-	.byte	0x2
-	.byte	0x91
-	.byte	0x6c
+	.byte	0x1
+	.byte	0x59
+	.byte	0
+	.byte	0x7
+	.4byte	.LBB4
+	.4byte	.LBE4-.LBB4
+	.4byte	0x132
+	.byte	0x3
+	.string	"i"
+	.byte	0x40
+	.4byte	0x6a
+	.byte	0x1
+	.byte	0x59
+	.byte	0
+	.byte	0x8
+	.4byte	.LBB5
+	.4byte	.LBE5-.LBB5
+	.byte	0x3
+	.string	"i"
+	.byte	0x4c
+	.4byte	0x6a
+	.byte	0x1
+	.byte	0x59
 	.byte	0
 	.byte	0
-	.byte	0xc
+	.byte	0xd
 	.byte	0x4
 	.4byte	0x6a
-	.byte	0x3
+	.byte	0x4
 	.4byte	.LASF16
 	.byte	0x22
 	.4byte	.LFB3
 	.4byte	.LFE3-.LFB3
 	.byte	0x1
 	.byte	0x9c
-	.byte	0x3
+	.byte	0x4
 	.4byte	.LASF17
 	.byte	0x18
 	.4byte	.LFB2
 	.4byte	.LFE2-.LFB2
 	.byte	0x1
 	.byte	0x9c
-	.byte	0x3
+	.byte	0x4
 	.4byte	.LASF18
 	.byte	0xe
 	.4byte	.LFB1
 	.4byte	.LFE1-.LFB1
 	.byte	0x1
 	.byte	0x9c
-	.byte	0xd
+	.byte	0xe
 	.4byte	.LASF21
 	.byte	0x1
 	.byte	0x3
@@ -466,16 +532,15 @@ fir:
 	.4byte	.LFE0-.LFB0
 	.byte	0x1
 	.byte	0x9c
-	.byte	0x6
+	.byte	0x8
 	.4byte	.LBB2
 	.4byte	.LBE2-.LBB2
-	.byte	0x7
+	.byte	0x3
 	.string	"i"
 	.byte	0x6
 	.4byte	0x6a
-	.byte	0x2
-	.byte	0x91
-	.byte	0x6c
+	.byte	0x1
+	.byte	0x59
 	.byte	0
 	.byte	0
 	.byte	0
@@ -514,6 +579,25 @@ fir:
 	.byte	0
 	.byte	0
 	.byte	0x3
+	.byte	0x34
+	.byte	0
+	.byte	0x3
+	.byte	0x8
+	.byte	0x3a
+	.byte	0x21
+	.byte	0x1
+	.byte	0x3b
+	.byte	0xb
+	.byte	0x39
+	.byte	0x21
+	.byte	0x13
+	.byte	0x49
+	.byte	0x13
+	.byte	0x2
+	.byte	0x18
+	.byte	0
+	.byte	0
+	.byte	0x4
 	.byte	0x2e
 	.byte	0
 	.byte	0x3f
@@ -538,7 +622,7 @@ fir:
 	.byte	0x19
 	.byte	0
 	.byte	0
-	.byte	0x4
+	.byte	0x5
 	.byte	0x1
 	.byte	0x1
 	.byte	0x49
@@ -547,7 +631,7 @@ fir:
 	.byte	0x13
 	.byte	0
 	.byte	0
-	.byte	0x5
+	.byte	0x6
 	.byte	0x21
 	.byte	0
 	.byte	0x49
@@ -556,7 +640,18 @@ fir:
 	.byte	0xb
 	.byte	0
 	.byte	0
+	.byte	0x7
+	.byte	0xb
+	.byte	0x1
+	.byte	0x11
+	.byte	0x1
+	.byte	0x12
 	.byte	0x6
+	.byte	0x1
+	.byte	0x13
+	.byte	0
+	.byte	0
+	.byte	0x8
 	.byte	0xb
 	.byte	0x1
 	.byte	0x11
@@ -565,26 +660,7 @@ fir:
 	.byte	0x6
 	.byte	0
 	.byte	0
-	.byte	0x7
-	.byte	0x34
-	.byte	0
-	.byte	0x3
-	.byte	0x8
-	.byte	0x3a
-	.byte	0x21
-	.byte	0x1
-	.byte	0x3b
-	.byte	0xb
-	.byte	0x39
-	.byte	0x21
-	.byte	0xa
-	.byte	0x49
-	.byte	0x13
-	.byte	0x2
-	.byte	0x18
-	.byte	0
-	.byte	0
-	.byte	0x8
+	.byte	0x9
 	.byte	0x11
 	.byte	0x1
 	.byte	0x25
@@ -603,7 +679,7 @@ fir:
 	.byte	0x17
 	.byte	0
 	.byte	0
-	.byte	0x9
+	.byte	0xa
 	.byte	0x16
 	.byte	0
 	.byte	0x3
@@ -618,7 +694,7 @@ fir:
 	.byte	0x13
 	.byte	0
 	.byte	0
-	.byte	0xa
+	.byte	0xb
 	.byte	0x24
 	.byte	0
 	.byte	0xb
@@ -629,7 +705,7 @@ fir:
 	.byte	0x8
 	.byte	0
 	.byte	0
-	.byte	0xb
+	.byte	0xc
 	.byte	0x2e
 	.byte	0x1
 	.byte	0x3f
@@ -656,7 +732,7 @@ fir:
 	.byte	0x13
 	.byte	0
 	.byte	0
-	.byte	0xc
+	.byte	0xd
 	.byte	0xf
 	.byte	0
 	.byte	0xb
@@ -665,7 +741,7 @@ fir:
 	.byte	0x13
 	.byte	0
 	.byte	0
-	.byte	0xd
+	.byte	0xe
 	.byte	0x2e
 	.byte	0x1
 	.byte	0x3f

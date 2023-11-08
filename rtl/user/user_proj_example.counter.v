@@ -100,12 +100,12 @@ module user_proj_example #(
     wire        sm_tvalid;
     wire        sm_tready;
     wire [31:0] sm_tdata;
-    wire        sm_tlast;
     wire [31:0] axistream_rdata;
 
     wire        ss_tvalid;
     wire        ss_tready;
     wire [31:0] ss_tdata;
+    wire        ss_tlast;
 
     // Signal for wb_axilite write
     wire        awvalid;
@@ -123,17 +123,17 @@ module user_proj_example #(
     wire [31:0] fir_rdata;
     wire [31:0] axilite_rdata;
     // ram for tap
-    wire [3:0]               tap_WE;
-    wire                     tap_EN;
+    wire [3:0]        tap_WE;
+    wire              tap_EN;
     wire [(BITS-1):0] tap_Di;
-    wire [(11):0] tap_A;
+    wire     [(11):0] tap_A;
     wire [(BITS-1):0] tap_Do;
 
     // ram for data RAM
-    wire [3:0]               data_WE;
-    wire                     data_EN;
+    wire [3:0]        data_WE;
+    wire              data_EN;
     wire [(BITS-1):0] data_Di;
-    wire [(11):0] data_A;
+    wire     [(11):0] data_A;
     wire [(BITS-1):0] data_Do;
 
     // WB MI A
@@ -253,14 +253,14 @@ module user_proj_example #(
         .araddr(araddr),
         .rvalid(rvalid),
         .rdata(fir_rdata),
-        .ss_tvalid(ss_tvalid),
-        .ss_tready(ss_tready),
-        .ss_tdata(ss_tdata),
+        .ss_tvalid(sm_tvalid),
+        .ss_tready(sm_tready),
+        .ss_tdata(sm_tdata),
         .ss_tlast(1'b0),
-        .sm_tready(sm_tready),
-        .sm_tvalid(sm_tvalid),
-        .sm_tdata(sm_tdata),
-        .sm_tlast(sm_tlast),
+        .sm_tready(ss_tready),
+        .sm_tvalid(ss_tvalid),
+        .sm_tdata(ss_tdata),
+        .sm_tlast(ss_tlast),
 
         // ram for tap
         .tap_WE(tap_WE),

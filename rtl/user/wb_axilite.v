@@ -1,7 +1,6 @@
 module wb_axilite
 #(  parameter pADDR_WIDTH=12,
-    parameter pDATA_WIDTH=32,
-    parameter DELAYS = 10
+    parameter pDATA_WIDTH=32
 )(
     clk,
     rst,
@@ -76,9 +75,28 @@ module wb_axilite
     output reg  rready;
     input  wire [pDATA_WIDTH-1:0] rdata;
 
-    // counter for delay 10 clock
-    reg  [3:0] count;
-    // transfer wbs to stream
+    // the return signal from fir to wb
+    always@(posedge clk) begin
+        if (rst) begin
+        wb_ready  <= 1'b0;
+        wbs_dat_o <= 32'h0;
+        end else begin
+            if (wb_valid && !wb_ready) begin
+                if (wbs_we_i) begin
+                    wb_ready  <= wready;
+                    wbs_dat_o <= 32'h0;
+                end else begin
+                    wb_ready  <= rvalid;
+                    wbs_dat_o <= rdata;
+                end
+            end else begin
+                wb_ready  <= 1'b0;
+                wbs_dat_o <= 32'h0;
+            end
+        end
+    end 
+
+    // the input signal from wb to fir
     always@(posedge clk) begin
         if (rst) begin
             //write initialize
@@ -90,16 +108,8 @@ module wb_axilite
             arvalid   <= 1'b0;
             rready    <= 1'b0;
             araddr    <= wbs_adr_i[pADDR_WIDTH-1:0];
-            wbs_dat_o <= rdata;
-            //wbs_ack_o initialize
-            wb_ready  <= 1'b0;
-            count     <= 4'b0;
         end else begin
-            if (count != DELAYS) begin
-                count    <= count + 1;
-                wb_ready <= 1'b0;
-            end
-            else if (wbs_we_i) begin
+            if (wbs_we_i) begin
                 awvalid   <= wb_valid;
                 awaddr    <= wbs_adr_i[pADDR_WIDTH-1:0];
                 wvalid    <= wb_valid;
@@ -108,10 +118,7 @@ module wb_axilite
                 arvalid   <= 1'b0;
                 rready    <= 1'b0;
                 araddr    <= wbs_adr_i[pADDR_WIDTH-1:0];
-                wbs_dat_o <= rdata;
-
-                wb_ready  <= wready;
-        end else begin
+            end else begin
                 awvalid   <= 1'b0;
                 wvalid    <= 1'b0;
                 awaddr    <= wbs_adr_i[pADDR_WIDTH-1:0];
@@ -120,13 +127,9 @@ module wb_axilite
                 arvalid   <= wb_valid;
                 araddr    <= wbs_adr_i[pADDR_WIDTH-1:0];
                 rready    <= wb_valid;
-                wbs_dat_o <= rdata;
-
-                wb_ready  <= rvalid;
+                end
+            end
         end
-        end
-    end
-
 endmodule
     
 

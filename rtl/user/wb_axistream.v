@@ -1,7 +1,6 @@
 module wb_axistream
 #(  parameter pADDR_WIDTH=12,
-    parameter pDATA_WIDTH=32,
-    parameter DELAYS = 10
+    parameter pDATA_WIDTH=32
 )(
     clk,
     rst,
@@ -71,53 +70,58 @@ module wb_axistream
 
     // register for input X[n];
     reg [pDATA_WIDTH-1:0] inputbuffer;
-    // address control signal
-    wire [1:0] control; 
-    // counter for delay 10 clock
-    reg  [3:0] count;
-    // transfer wbs to stream
+
+    // the return signal from fir to wb
+    always@(posedge clk) begin
+        if (rst) begin
+            wb_ready  <= 1'b0;
+            wbs_dat_o <= 32'h0;
+        end else begin
+            if (wb_valid && !wb_ready) begin
+                    if ((wbs_adr_i == 32'h30000080) && wbs_we_i) begin
+                        wb_ready  <= sm_tready;
+                        wbs_dat_o <= 32'h0;
+                    end else if ((wbs_adr_i == 32'h30000080) && (!wbs_we_i)) begin
+                        wb_ready  <= 1'b1;
+                        wbs_dat_o <= inputbuffer;
+                    end else if ((wbs_adr_i == 32'h30000084) && (!wbs_we_i)) begin
+                        wb_ready  <= ss_tvalid;
+                        wbs_dat_o <= ss_tdata;
+                    end else begin
+                        wb_ready  <= 1'b0;
+                        wbs_dat_o <= 32'h0;
+                    end
+                end else begin
+                    wb_ready  <= 1'b0;
+                    wbs_dat_o <= 32'h0;
+                end
+            end
+        end 
+
+    // the input signal from wb to fir
     always@(posedge clk) begin
         if (rst) begin
             sm_tvalid <= 1'b0;
             sm_tdata  <= 32'h0;
             ss_tready <= 1'b0;
-            wb_ready  <= 1'b0;
-            wbs_dat_o <= 32'h0;
-            count     <= 4'b0;
         end else begin 
-            if (count != DELAYS) begin
-                count     <= count + 1;
-                wb_ready  <= 1'b0;
-            end
-            else if ((control == 01) && wbs_we_i) begin
+            if ((wbs_adr_i == 32'h30000080) && wbs_we_i) begin
                 sm_tvalid <= wb_valid;
                 sm_tdata  <= wbs_dat_i;
                 ss_tready <= 1'b0;
-                wb_ready  <= sm_tready;
-                wbs_dat_o <= 32'h0;
-                count <= 4'b0;
-            end else if ((control == 01) && (!wbs_we_i)) begin
+            end else if ((wbs_adr_i == 32'h30000080) && (!wbs_we_i)) begin
                 sm_tvalid <= 1'b0;
                 sm_tdata  <= 32'h0;
                 ss_tready <= 1'b0;
-                wb_ready  <= 1'b1;
-                wbs_dat_o <= inputbuffer;
-                count <= 4'b0;
-            end else if ((control == 10) && (!wbs_we_i)) begin
+            end else if ((wbs_adr_i == 32'h30000084) && (!wbs_we_i)) begin
                 sm_tvalid <= 1'b0;
                 sm_tdata  <= 32'h0;
                 ss_tready <= wb_valid;
-                wb_ready  <= ss_tvalid;
-                wbs_dat_o <= ss_tdata;
-                count <= 4'b0;
             end else begin
                 sm_tvalid <= 1'b0;
                 sm_tdata  <= wbs_dat_i;
                 ss_tready <= 1'b0;
-                wb_ready  <= 1'b0;
-                wbs_dat_o <= 32'h0;
-                count <= 4'b0;
-            end            
+            end
         end
     end
 
@@ -131,7 +135,6 @@ module wb_axistream
         end
     end
 
-    assign control = (wbs_adr_i == 32'h30000080) ? 2'b01 : (wbs_adr_i == 32'h30000084) ? 2'b10 : 2'b00;
 endmodule
     
 
