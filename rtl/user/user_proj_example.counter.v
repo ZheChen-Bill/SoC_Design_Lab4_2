@@ -205,11 +205,11 @@ module user_proj_example #(
         .wbs_dat_i(wbs_dat_i),
         .wbs_dat_o(axistream_rdata),
 
-        .sm_tvalid(sm_tvalid),
+        .sm_tvalid(sm_tvalid), //from master(wb_axistream) to slave(fir)
         .sm_tready(sm_tready),
         .sm_tdata(sm_tdata),
 
-        .ss_tvalid(ss_tvalid),
+        .ss_tvalid(ss_tvalid), //from master(fir) to slave(wb_axistream)
         .ss_tready(ss_tready),
         .ss_tdata(ss_tdata)
     );
@@ -247,17 +247,20 @@ module user_proj_example #(
         .awaddr(awaddr),
         .wvalid(wvalid),
         .wdata(fir_wdata),
+        
         .arready(arready),
         .rready(rready),
         .arvalid(arvalid),
         .araddr(araddr),
         .rvalid(rvalid),
         .rdata(fir_rdata),
-        .ss_tvalid(sm_tvalid),
+
+        .ss_tvalid(sm_tvalid), //from master(wb_axistream) to slave(fir)
         .ss_tready(sm_tready),
         .ss_tdata(sm_tdata),
         .ss_tlast(1'b0),
-        .sm_tready(ss_tready),
+
+        .sm_tready(ss_tready), //from master(fir) to slave(wb_axistream)
         .sm_tvalid(ss_tvalid),
         .sm_tdata(ss_tdata),
         .sm_tlast(ss_tlast),

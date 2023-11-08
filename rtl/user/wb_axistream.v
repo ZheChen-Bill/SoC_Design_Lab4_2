@@ -87,6 +87,9 @@ module wb_axistream
                     end else if ((wbs_adr_i == 32'h30000084) && (!wbs_we_i)) begin
                         wb_ready  <= ss_tvalid;
                         wbs_dat_o <= ss_tdata;
+                    end else if ((wbs_adr_i == 32'h30000084) && (wbs_we_i)) begin
+                        wb_ready  <= 1'b1;
+                        wbs_dat_o <= 32'h0;
                     end else begin
                         wb_ready  <= 1'b0;
                         wbs_dat_o <= 32'h0;
