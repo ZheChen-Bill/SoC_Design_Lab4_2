@@ -44,8 +44,8 @@ void __attribute__ ( ( section ( ".mprjram" ) ) ) output() {
 
 int* __attribute__ ( ( section ( ".mprjram" ) ) ) fir(){
 	// initialize fir (data_length, taps, ... etc)
+	reg_mprj_datal = (0xA5000000>>8);
 	initfir();
-
 	// check ap_idle = 1(bit[2] = 1), ap_start = 1;
 	start();
 	//write down your fir
@@ -58,10 +58,10 @@ int* __attribute__ ( ( section ( ".mprjram" ) ) ) fir(){
 		//check fir is valid for output data (bit[5] = 1), then read data;
 		output();
 	}
-	reg_mprj_datal  = (reg_fir_y<<16);
-	reg_mprj_datal  = ((reg_fir_y<<24)|0x5A000000>>8);
+	reg_mprj_datal = (reg_fir_y<<16);
+	reg_mprj_datal = ((reg_fir_y<<24)|0x5A000000>>8);
 
-	reg_mprj_datal  = (0xA5000000>>8);
+	reg_mprj_datal = (0xA5000000>>8);
 	start();
 	//write down your fir
 	for(int register i=0;i<data_length;i=i+1){
@@ -73,10 +73,10 @@ int* __attribute__ ( ( section ( ".mprjram" ) ) ) fir(){
 		//check fir is valid for output data (bit[5] = 1), then read data;
 		output();
 	}
-	reg_mprj_datal  = (reg_fir_y<<16);
-	reg_mprj_datal  = ((reg_fir_y<<24)|0x5A000000>>8);
+	reg_mprj_datal = (reg_fir_y<<16);
+	reg_mprj_datal = ((reg_fir_y<<24)|0x5A000000>>8);
 
-	reg_mprj_datal  = (0xA5000000>>8);
+	reg_mprj_datal = (0xA5000000>>8);
 	start();
 	//write down your fir
 	for(int register i=0;i<data_length;i=i+1){
@@ -88,8 +88,8 @@ int* __attribute__ ( ( section ( ".mprjram" ) ) ) fir(){
 		//check fir is valid for output data (bit[5] = 1), then read data;
 		output();
 	}
-		reg_mprj_datal  = (reg_fir_y<<16);
-		reg_mprj_datal  = ((reg_fir_y<<24)|0x5A000000>>8);
+		reg_mprj_datal = (reg_fir_y<<16);
+		reg_mprj_datal = ((reg_fir_y<<24)|0x5A000000>>8);
 		outputbuffer[0] = reg_fir_y;
 		return outputbuffer;
 	}
