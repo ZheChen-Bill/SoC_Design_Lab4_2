@@ -16,7 +16,7 @@ Linker script and memory map
 
                 0x0000000000000000                __DYNAMIC = 0x0
 
-.text           0x0000000010000000      0x694
+.text           0x0000000010000000      0x6a4
                 0x0000000010000000                _ftext = .
  *crt0*(.text)
  .text          0x0000000010000000      0x144 counter_la_fir.elf-crt0_vex.o
@@ -27,25 +27,25 @@ Linker script and memory map
                 0x0000000010000144                _etext = .
  .text          0x0000000010000144       0xb4 counter_la_fir.elf-isr.o
                 0x00000000100001a4                isr
- .text          0x00000000100001f8        0x0 counter_la_fir.elf-fir.o
- .text          0x00000000100001f8      0x49c counter_la_fir.elf-counter_la_fir.o
-                0x0000000010000230                putchar
-                0x0000000010000298                print
-                0x00000000100002ec                main
+ .text          0x00000000100001f8       0x38 counter_la_fir.elf-fir.o
+ .text          0x0000000010000230      0x474 counter_la_fir.elf-counter_la_fir.o
+                0x0000000010000268                putchar
+                0x00000000100002d0                print
+                0x0000000010000324                main
 
-.rela.dyn       0x0000000010000694        0x0
- .rela.text     0x0000000010000694        0x0 counter_la_fir.elf-crt0_vex.o
+.rela.dyn       0x00000000100006a4        0x0
+ .rela.text     0x00000000100006a4        0x0 counter_la_fir.elf-crt0_vex.o
 
-.rodata         0x0000000010000694        0x4
-                0x0000000010000698                . = ALIGN (0x8)
- *fill*         0x0000000010000694        0x4 
-                0x0000000010000698                _frodata = .
+.rodata         0x00000000100006a4        0x4
+                0x00000000100006a8                . = ALIGN (0x8)
+ *fill*         0x00000000100006a4        0x4 
+                0x00000000100006a8                _frodata = .
  *(.rodata .rodata.* .gnu.linkonce.r.*)
  *(.rodata1)
-                0x0000000010000698                . = ALIGN (0x8)
-                0x0000000010000698                _erodata = .
+                0x00000000100006a8                . = ALIGN (0x8)
+                0x00000000100006a8                _erodata = .
 
-.data           0x0000000000000000       0x30 load address 0x0000000010000698
+.data           0x0000000000000000       0x30 load address 0x00000000100006a8
                 0x0000000000000000                . = ALIGN (0x8)
                 0x0000000000000000                _fdata = .
  *(.data .data.* .gnu.linkonce.d.*)
@@ -62,7 +62,7 @@ Linker script and memory map
                 0x0000000000000030                . = ALIGN (0x8)
                 0x0000000000000030                _edata = .
 
-.bss            0x0000000000000030       0x10 load address 0x00000000100006c8
+.bss            0x0000000000000030       0x10 load address 0x00000000100006d8
                 0x0000000000000030                . = ALIGN (0x8)
                 0x0000000000000030                _fbss = .
  *(.dynsbss)
@@ -86,21 +86,21 @@ Linker script and memory map
                 0x0000000000000040                _ebss = .
                 0x0000000000000040                _end = .
 
-.mprjram        0x0000000038000000      0x1b0 load address 0x00000000100006c8
+.mprjram        0x0000000038000000      0x274 load address 0x00000000100006d8
                 0x0000000038000000                . = ALIGN (0x8)
                 0x0000000038000000                _fsram = .
  *libgcc.a:*(.text .text.*)
- .mprjram       0x0000000038000000      0x1b0 counter_la_fir.elf-fir.o
+ .mprjram       0x0000000038000000      0x274 counter_la_fir.elf-fir.o
                 0x0000000038000000                initfir
-                0x0000000038000088                start
-                0x00000000380000d0                input
-                0x0000000038000110                output
-                0x0000000038000150                fir
+                0x000000003800007c                start
+                0x00000000380000c4                input
+                0x00000000380000f0                output
+                0x000000003800011c                fir
                 0x0000000000000600                PROVIDE (_fstack = (ORIGIN (dff2) + LENGTH (dff2)))
-                0x0000000010000698                PROVIDE (_fdata_rom = LOADADDR (.data))
+                0x00000000100006a8                PROVIDE (_fdata_rom = LOADADDR (.data))
                 [!provide]                        PROVIDE (_edata_rom = (LOADADDR (.data) + SIZEOF (.data)))
-                0x00000000380001b0                PROVIDE (_esram = (ORIGIN (mprjram) + SIZEOF (.mprjram)))
-                0x00000000100006c8                PROVIDE (_esram_rom = LOADADDR (.mprjram))
+                0x0000000038000274                PROVIDE (_esram = (ORIGIN (mprjram) + SIZEOF (.mprjram)))
+                0x00000000100006d8                PROVIDE (_esram_rom = LOADADDR (.mprjram))
 LOAD counter_la_fir.elf-crt0_vex.o
 LOAD counter_la_fir.elf-isr.o
 LOAD counter_la_fir.elf-fir.o
@@ -130,11 +130,11 @@ OUTPUT(counter_la_fir.elf elf32-littleriscv)
  .comment       0x000000000000001b       0x1c counter_la_fir.elf-fir.o
  .comment       0x000000000000001b       0x1c counter_la_fir.elf-counter_la_fir.o
 
-.debug_line     0x0000000000000000      0x92e
+.debug_line     0x0000000000000000      0xa59
  .debug_line    0x0000000000000000      0x204 counter_la_fir.elf-crt0_vex.o
  .debug_line    0x0000000000000204       0xd1 counter_la_fir.elf-isr.o
- .debug_line    0x00000000000002d5      0x222 counter_la_fir.elf-fir.o
- .debug_line    0x00000000000004f7      0x437 counter_la_fir.elf-counter_la_fir.o
+ .debug_line    0x00000000000002d5      0x37d counter_la_fir.elf-fir.o
+ .debug_line    0x0000000000000652      0x407 counter_la_fir.elf-counter_la_fir.o
 
 .debug_line_str
                 0x0000000000000000       0xdb
@@ -145,48 +145,48 @@ OUTPUT(counter_la_fir.elf elf32-littleriscv)
                                          0xf6 (size before relaxing)
  .debug_line_str
                 0x00000000000000bd        0x6 counter_la_fir.elf-fir.o
-                                         0xcb (size before relaxing)
+                                         0xe3 (size before relaxing)
  .debug_line_str
                 0x00000000000000c3       0x18 counter_la_fir.elf-counter_la_fir.o
                                         0x105 (size before relaxing)
 
-.debug_info     0x0000000000000000      0x3bd
+.debug_info     0x0000000000000000      0x418
  .debug_info    0x0000000000000000       0x25 counter_la_fir.elf-crt0_vex.o
  .debug_info    0x0000000000000025       0xed counter_la_fir.elf-isr.o
- .debug_info    0x0000000000000112      0x178 counter_la_fir.elf-fir.o
- .debug_info    0x000000000000028a      0x133 counter_la_fir.elf-counter_la_fir.o
+ .debug_info    0x0000000000000112      0x1d3 counter_la_fir.elf-fir.o
+ .debug_info    0x00000000000002e5      0x133 counter_la_fir.elf-counter_la_fir.o
 
-.debug_abbrev   0x0000000000000000      0x271
+.debug_abbrev   0x0000000000000000      0x299
  .debug_abbrev  0x0000000000000000       0x14 counter_la_fir.elf-crt0_vex.o
  .debug_abbrev  0x0000000000000014       0xa9 counter_la_fir.elf-isr.o
- .debug_abbrev  0x00000000000000bd       0xcf counter_la_fir.elf-fir.o
- .debug_abbrev  0x000000000000018c       0xe5 counter_la_fir.elf-counter_la_fir.o
+ .debug_abbrev  0x00000000000000bd       0xf7 counter_la_fir.elf-fir.o
+ .debug_abbrev  0x00000000000001b4       0xe5 counter_la_fir.elf-counter_la_fir.o
 
-.debug_aranges  0x0000000000000000       0xa0
+.debug_aranges  0x0000000000000000       0xa8
  .debug_aranges
                 0x0000000000000000       0x20 counter_la_fir.elf-crt0_vex.o
  .debug_aranges
                 0x0000000000000020       0x20 counter_la_fir.elf-isr.o
  .debug_aranges
-                0x0000000000000040       0x40 counter_la_fir.elf-fir.o
+                0x0000000000000040       0x48 counter_la_fir.elf-fir.o
  .debug_aranges
-                0x0000000000000080       0x20 counter_la_fir.elf-counter_la_fir.o
+                0x0000000000000088       0x20 counter_la_fir.elf-counter_la_fir.o
 
 .debug_str      0x0000000000000000      0x1aa
  .debug_str     0x0000000000000000       0x5e counter_la_fir.elf-crt0_vex.o
  .debug_str     0x000000000000005e       0xec counter_la_fir.elf-isr.o
                                         0x125 (size before relaxing)
  .debug_str     0x000000000000014a       0x4d counter_la_fir.elf-fir.o
-                                        0x130 (size before relaxing)
+                                        0x15b (size before relaxing)
  .debug_str     0x0000000000000197       0x13 counter_la_fir.elf-counter_la_fir.o
                                         0x11e (size before relaxing)
 
-.debug_frame    0x0000000000000000      0x240
+.debug_frame    0x0000000000000000      0x28c
  .debug_frame   0x0000000000000000       0xa4 counter_la_fir.elf-isr.o
- .debug_frame   0x00000000000000a4       0xcc counter_la_fir.elf-fir.o
- .debug_frame   0x0000000000000170       0xd0 counter_la_fir.elf-counter_la_fir.o
+ .debug_frame   0x00000000000000a4      0x118 counter_la_fir.elf-fir.o
+ .debug_frame   0x00000000000001bc       0xd0 counter_la_fir.elf-counter_la_fir.o
 
 .debug_rnglists
-                0x0000000000000000       0x3a
+                0x0000000000000000       0x43
  .debug_rnglists
-                0x0000000000000000       0x3a counter_la_fir.elf-fir.o
+                0x0000000000000000       0x43 counter_la_fir.elf-fir.o
